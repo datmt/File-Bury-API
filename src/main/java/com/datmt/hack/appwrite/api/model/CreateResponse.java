@@ -1,11 +1,13 @@
 package com.datmt.hack.appwrite.api.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreType;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class CreateResponse {
 
     private String code;

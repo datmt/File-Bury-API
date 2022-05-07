@@ -1,7 +1,7 @@
 package com.datmt.hack.appwrite.api.controller;
 
 import com.datmt.hack.appwrite.api.model.CreateResponse;
-import com.datmt.hack.appwrite.api.model.UnearthDetails;
+import com.datmt.hack.appwrite.api.model.UnearthResponse;
 import com.datmt.hack.appwrite.api.service.AppwriteService;
 import kong.unirest.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +10,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.stream.Collectors;
+import java.net.URLDecoder;
+import java.nio.charset.Charset;
 
 @RestController
 @RequestMapping("/v1")
@@ -35,7 +35,7 @@ public class Controller {
     }
 
     @PostMapping("/database/collections/{dbId}/documents")
-    public CreateResponse bury(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException, UnirestException {
+    public CreateResponse bury(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException, UnirestException, NoSuchFieldException, IllegalAccessException {
 
         return appwriteService.createDocument(request, dbId);
 
@@ -45,7 +45,16 @@ public class Controller {
 
 
     @GetMapping("/database/collections/{dbId}/documents")
-    public ResponseEntity<UnearthDetails> dig( @PathVariable String dbId, @RequestParam String queries) {
-        return ResponseEntity.ok().body(null);
+
+    public String dig(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException {
+         if (URLDecoder.decode(request.getQueryString(), Charset.defaultCharset()).length() != 29) {
+             //the length is always 29 because the number is always six nubmers
+             throw new RuntimeException("Bad request");
+         }
+
+
+         return appwriteService.dig(request, dbId);
+
+
     }
 }

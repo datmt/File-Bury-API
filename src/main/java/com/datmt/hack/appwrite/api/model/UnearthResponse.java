@@ -5,6 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UnearthDetails {
+public class UnearthResponse {
     private String text;
+
 }
