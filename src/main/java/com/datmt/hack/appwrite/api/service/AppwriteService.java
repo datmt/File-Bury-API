@@ -119,5 +119,22 @@ public class AppwriteService {
         return headers;
     }
 
+    public String forwardRequest(HttpServletRequest request, String url, String httpMethod) throws IOException {
+        Map<String, String> headers = getRequestHeaders(request);
+
+        Request.Builder builder = new Request.Builder()
+                .url(url);
+
+        headers.entrySet().forEach(t -> {
+            builder.addHeader(t.getKey(), t.getValue());
+        });
+
+        OkHttpClient client = new OkHttpClient();
+        Call call = client.newCall(builder.build());
+        Response response = call.execute();
+
+        return response.peekBody(Long.MAX_VALUE).string();
+    }
+
 
 }

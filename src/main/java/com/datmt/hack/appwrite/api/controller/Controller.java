@@ -5,6 +5,7 @@ import com.datmt.hack.appwrite.api.model.UnearthResponse;
 import com.datmt.hack.appwrite.api.service.AppwriteService;
 import kong.unirest.UnirestException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -24,23 +25,35 @@ public class Controller {
     @Autowired
     AppwriteService appwriteService;
 
+    @Value("${appwrite.url}")
+    String appwriteURL;
+
     @GetMapping("/hello")
     public String hello() {
         return "Great";
     }
 
     @PostMapping("/account/sessions/anonymous")
-    public String createSession(){
-        return "nice";
+    public String createSession( HttpServletRequest request) throws IOException {
+        return appwriteService.forwardRequest( request, appwriteURL + "/account/sessions/anonymous", "POST");
+    }
+
+    @GetMapping("/account")
+    public String getAccount( HttpServletRequest request) throws IOException {
+        return appwriteService.forwardRequest( request, appwriteURL + "/account", "GET");
+
+    }
+
+    @GetMapping("/account/sessions")
+    public String getSessions( HttpServletRequest request) throws IOException {
+        return appwriteService.forwardRequest( request, appwriteURL + "/account/sessions", "GET");
+
     }
 
     @PostMapping("/database/collections/{dbId}/documents")
     public CreateResponse bury(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException, UnirestException, NoSuchFieldException, IllegalAccessException {
 
         return appwriteService.createDocument(request, dbId);
-
-
-
     }
 
 
@@ -54,7 +67,5 @@ public class Controller {
 
 
          return appwriteService.dig(request, dbId);
-
-
     }
 }
