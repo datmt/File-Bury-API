@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  haproxy:
+    container_name: haproxy-appwrite
+    image: haproxy:2.4.0
+    restart: always
+    ports:
+      - 8817:80
+    volumes:
+      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
