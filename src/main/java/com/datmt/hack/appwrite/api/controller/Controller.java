@@ -28,26 +28,20 @@ public class Controller {
     @Value("${appwrite.url}")
     String appwriteURL;
 
-    @GetMapping("/hello")
-    public String hello() {
-        return "Great";
-    }
-
     @PostMapping("/account/sessions/anonymous")
     public String createSession( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "/account/sessions/anonymous", "POST");
+        return appwriteService.forwardRequest( request, appwriteURL + "account/sessions/anonymous", "POST");
     }
 
     @GetMapping("/account")
     public String getAccount( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "/account", "GET");
+        return appwriteService.forwardRequest( request, appwriteURL + "account", "GET");
 
     }
 
     @GetMapping("/account/sessions")
     public String getSessions( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "/account/sessions", "GET");
-
+        return appwriteService.forwardRequest( request, appwriteURL + "account/sessions", "GET");
     }
 
     @PostMapping("/database/collections/{dbId}/documents")

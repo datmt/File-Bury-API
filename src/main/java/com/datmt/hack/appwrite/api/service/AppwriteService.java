@@ -1,29 +1,22 @@
 package com.datmt.hack.appwrite.api.service;
 
 
-import com.datmt.hack.appwrite.api.model.CreateRequest;
 import com.datmt.hack.appwrite.api.model.CreateResponse;
-import com.datmt.hack.appwrite.api.model.UnearthResponse;
-import com.google.gson.Gson;
-import kong.unirest.JsonNode;
 import kong.unirest.Unirest;
 import kong.unirest.UnirestException;
 import okhttp3.Call;
+import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
+import okhttp3.RequestBody;
 import okhttp3.Response;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.URLDecoder;
-import java.net.http.HttpClient;
-import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -61,15 +54,6 @@ public class AppwriteService {
 
         return response.peekBody(Long.MAX_VALUE).string();
 
-//        Object o = Unirest
-//                .get(getDBQueryUrl(dbId) + "?" + request.getQueryString())
-//                .headers(headers)
-//                .asObject(Object.class);
-////http://localhost:8080/v1/database/collections/62754731c4635af92550/documents?queries%5B0%5D=code.equal%28376004%29
-////http://localhost:8818/v1/database/collections/62754731c4635af92550/documents?queries%5B0%5D=code.equal%28376004%29
-////http://localhost:8818/v1/database/collections/62754731c4635af92550/documents?queries%5B0%5D=code.equal%28747797%29
-//
-//        return null;
 
     }
 
@@ -82,10 +66,11 @@ public class AppwriteService {
         int code = new Random().nextInt(999999 - 100000) + 100000;
 
 
-        payload = payload.replace("__CODE_PLACEHOLDER__", String.valueOf(code));
+        payload = payload.replace("__CODE_PLACEHOLDER__", String.valueOf(code))
+                .replace("__TS_PLACEHOLDER__", String.valueOf(System.currentTimeMillis()));
+
         Object o = Unirest
                 .post(getDBQueryUrl(dbId))
-
                 .headers(headers)
                 .body(payload)
                 .asObject(Object.class);
@@ -124,6 +109,25 @@ public class AppwriteService {
 
         Request.Builder builder = new Request.Builder()
                 .url(url);
+
+        headers.entrySet().forEach(t -> {
+            builder.addHeader(t.getKey(), t.getValue());
+        });
+
+
+        if (httpMethod.equalsIgnoreCase("POST")) {
+            StringBuilder buffer = new StringBuilder();
+            BufferedReader reader = request.getReader();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line);
+                buffer.append(System.lineSeparator());
+            }
+            String data = buffer.toString();
+
+            builder.post(RequestBody.create(MediaType.parse("application/json"),data));
+
+        }
 
         headers.entrySet().forEach(t -> {
             builder.addHeader(t.getKey(), t.getValue());
