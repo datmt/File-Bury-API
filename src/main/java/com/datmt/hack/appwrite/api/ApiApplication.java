@@ -23,7 +23,7 @@ public class ApiApplication {
 						.allowedHeaders("*")
 						.allowedMethods("*")
 						.allowCredentials(true)
-						.allowedOrigins("http://localhost:4200");
+						.allowedOrigins("http://localhost:4200", "https://x2.openexl.com");
 			}
 		};
 	}

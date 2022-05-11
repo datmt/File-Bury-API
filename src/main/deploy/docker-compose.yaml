@@ -5,6 +5,7 @@ services:
     container_name: haproxy-appwrite
     image: haproxy:2.4.0
     restart: always
+    env
     ports:
       - 8817:80
     volumes:
