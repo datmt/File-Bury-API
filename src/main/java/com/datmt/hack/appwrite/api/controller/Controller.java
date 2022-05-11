@@ -28,22 +28,6 @@ public class Controller {
     @Value("${appwrite.url}")
     String appwriteURL;
 
-    @PostMapping("/account/sessions/anonymous")
-    public String createSession( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "account/sessions/anonymous", "POST");
-    }
-
-    @GetMapping("/account")
-    public String getAccount( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "account", "GET");
-
-    }
-
-    @GetMapping("/account/sessions")
-    public String getSessions( HttpServletRequest request) throws IOException {
-        return appwriteService.forwardRequest( request, appwriteURL + "account/sessions", "GET");
-    }
-
     @PostMapping("/database/collections/{dbId}/documents")
     public CreateResponse bury(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException, UnirestException, NoSuchFieldException, IllegalAccessException {
 
@@ -54,12 +38,12 @@ public class Controller {
     @GetMapping("/database/collections/{dbId}/documents")
 
     public String dig(@PathVariable(name = "dbId") String dbId, HttpServletRequest request) throws IOException {
-         if (URLDecoder.decode(request.getQueryString(), Charset.defaultCharset()).length() != 29) {
-             //the length is always 29 because the number is always six nubmers
-             throw new RuntimeException("Bad request");
-         }
+        if (URLDecoder.decode(request.getQueryString(), Charset.defaultCharset()).length() != 29) {
+            //the length is always 29 because the number is always six nubmers
+            throw new RuntimeException("Bad request");
+        }
 
-
-         return appwriteService.dig(request, dbId);
+        return appwriteService.dig(request, dbId);
     }
+
 }

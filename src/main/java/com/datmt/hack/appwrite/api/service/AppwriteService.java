@@ -129,15 +129,14 @@ public class AppwriteService {
 
         }
 
-        headers.entrySet().forEach(t -> {
-            builder.addHeader(t.getKey(), t.getValue());
-        });
+        headers.forEach(builder::addHeader);
 
         OkHttpClient client = new OkHttpClient();
         Call call = client.newCall(builder.build());
-        Response response = call.execute();
+        try (Response response = call.execute()) {
 
-        return response.peekBody(Long.MAX_VALUE).string();
+            return response.peekBody(Long.MAX_VALUE).string();
+        }
     }
 
 
